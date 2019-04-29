@@ -55,7 +55,16 @@ class Generator {
     }
 
 }
-
+/*
+* A Cell represents one element in the Sudoku grid.
+* A Cell has a value (digit) and may or may not be editable.
+* In this implementation, empty cells are given value = 0;
+*
+* A Cell is aware of its row, colunm, and block. By looking
+* at the values in companion cells, we can determine if a
+* cell is valid, or how many possible values it can have 
+* (referred to here as its "valence").
+*/
 class Cell {
     constructor(x, y, b, v, brd) {
         this.column = x;
@@ -141,6 +150,9 @@ class Cell {
 
 }
 
+/*
+* Rows, Columns, and Blocks of Cells are modeled as Cell Groups.
+*/
 class Group {
     constructor(t, l) {
         this.type = t;
@@ -156,6 +168,25 @@ class Group {
     }
 }
 
+/*
+* The Board is an aggregate of Cells. The Board
+* must be initialized (filled with zeroed cells).
+* The Board can generate HTML to draw itself 
+* via the drawBoard() function.
+* 
+* There is a simple solving algorithm built into the
+* Board that looks for single-valence cells and completes
+* them until finished. If this method works, the 
+* puzzle associated with the board has a unique solution.
+* A board is solved using the solve() method. To test if 
+* a board can be solved, the canSolve() will clone the 
+* board and run the solve algorithm.
+*
+* An initial puzzle can be created using the Solver class,
+* which uses random guesses and recursion to solve, rather
+* than only filling in valence 1 cells.
+* 
+*/
 class Board {
     constructor(size) {
         this.n = size;
@@ -516,12 +547,17 @@ class Move {
 
 /*
  * Takes an initialized board and solves it.
- * Can be used to generate completed boards that are
+ * 
+ * Currently, is used to generate completed boards that are
  * then re-opened to create puzzles.
  * let b = new Board(4);
  * b.init();
  * let s = new Solver(b); 
  * s.solve();
+ *
+ * To do: adapt the behavior to skip over non-editable cells
+ * to allow this class to solve partially completed boards (i.e. a general
+ * Sudoku solver).
  */
 
 class Solver {
@@ -572,6 +608,7 @@ class Solver {
 
 }
 
+// When clicked, the board will update the currentPosition variable.
 function buttonClicked(e) {
     let r = e.currentTarget.getAttribute("data-row");
     let c = e.currentTarget.getAttribute("data-column");
@@ -579,6 +616,9 @@ function buttonClicked(e) {
     evnts.fireEvent("positionUpdate");
 }
 
+/*
+* Utility functions.
+*/
 
 function swapTwo(array) {
     let narray = [...array];
