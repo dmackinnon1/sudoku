@@ -256,6 +256,15 @@ class Board {
         }
     }
 
+    reset() {
+        let all = this.allCells();
+        for (let c in all){
+            if (all[c].editable){
+                all[c].value = 0;
+            }
+        }
+    }
+
     cloneFrom(board) {
         for (let i = 0; i < this.n; i++) {
             for (let j = 0; j < this.n; j++) {
@@ -369,7 +378,7 @@ class Board {
         return complete;
 
     }
-
+    //Todo: extract styles into css classes
     drawBoard() {
         let html = "<table>"
         for (let i = 0; i < this.n; i++) {
@@ -389,17 +398,42 @@ class Board {
                 if (this.n == 9 && (j == 2 || j == 5)) {
                     html += " style='border-right:3px solid #000000'";
                 }
+                let value = this.cells[j][i].value;
+                let edit = this.cells[j][i].editable;
+                let valid = this.cells[j][i].valid;
+                let valence = this.cells[j][i].valence();
+
                 let style = "style='height:30px; width:30px; padding-top:3px; ";
                 html += "><div data-row='" + i + "' data-column='" + j + "'onclick='buttonClicked(event)'"
-                if (!this.cells[j][i].editable) {
+                
+                if (!edit) {
                     style += " background-color:lightgrey;";
-                } else if ((this.cells[j][i].valence() == 1 && this.cells[j][i].value == 0) && this.hints) {
-                    style += " background-color:lightgreen;"
-                } else if ((!this.cells[j][i].valid && this.cells[j][i].editable) && this.hints) {
-                    style += " background-color:pink;";
-                }
+                
+                } else if (!this.hints){
+                    if (value == 0){
+                       style += " background-color:white;color:white"  
+                    }
+                } else { 
+                    if (!valid){
+                        style += " background-color:pink;"    
+                    } else if (valence == 1){
+                        style += " background-color:lightgreen;"
+                    } else {
+                        style += " background-color:white;"
+                    }
+                    if (value ==0) {
+                        if (!valid){
+                           style += "color:pink;"    
+                        } else if (valence == 1){
+                            style += "color:lightgreen;"
+                        } else {
+                            style += "color:white;"
+                        }
+                    }
+                }    
+                
                 style += "'";
-                html += style + ">" + this.cells[j][i].value + "</div></td>";
+                html += style + "><p>" + this.cells[j][i].value + "</p></div></td>";
             }
             html += "</tr>"
         }
@@ -473,7 +507,6 @@ class Board {
      */
     solve() {
         while (!this.isComplete()) {
-
             let cell = this.getValenceOne();
             if (cell == undefined) {
                 console.log("could not find valence 1 cell");
@@ -495,6 +528,23 @@ class Board {
         test.cloneFrom(this);
         test.solve();
         return test.isComplete();
+    }
+
+    freeze(){
+        let all = this.allCells();
+        for (let c in all){
+                all[c].editable = false;
+        }
+    }
+
+    solution(){
+        let solution = new Board(this.n);
+        solution.init();
+        solution.cloneFrom(this);
+        solution.reset();
+        solution.solve();
+        solution.freeze();
+        return solution;
     }
 
     updateFromCurrentPosition() {
