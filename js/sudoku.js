@@ -682,6 +682,7 @@ class Move {
  * backs up to the previous move and tries again.
  */
 
+//Todo: fix issues with solver so it can operate on partial boards.
 class Solver {
     constructor(b) {
         this.board = b;
