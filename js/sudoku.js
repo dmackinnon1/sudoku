@@ -378,62 +378,65 @@ class Board {
         return complete;
 
     }
-    //Todo: extract styles into css classes
+
     drawBoard() {
         let html = "<table>"
         for (let i = 0; i < this.n; i++) {
+            //row drawing and style (tr)
             html += "<tr";
             if (this.n == 4 && i == 1) {
-                html += " style='border-bottom:3px solid #000000'";
+                html += " class='tr-sudoku-border-bottom'";
             }
             if (this.n == 9 && (i == 2 || i == 5)) {
-                html += " style='border-bottom:3px solid #000000'";
+                html += " class='tr-sudoku-border-bottom'";;
             }
             html += ">";
             for (let j = 0; j < this.n; j++) {
+                //entry drawing and style (td)
+                let td_class = " class='";
                 html += "<td";
                 if (this.n == 4 && j == 1) {
-                    html += " style='border-right:3px solid #000000'";
+                    td_class += "td-sudoku-border-right "; 
                 }
                 if (this.n == 9 && (j == 2 || j == 5)) {
-                    html += " style='border-right:3px solid #000000'";
+                    td_class += "td-sudoku-border-right ";
                 }
+                td_class += "'";
+                html += td_class;
+                //inner cell draw and style (div)
                 let value = this.cells[j][i].value;
                 let edit = this.cells[j][i].editable;
                 let valid = this.cells[j][i].valid;
                 let valence = this.cells[j][i].valence();
-
-                let style = "style='height:30px; width:30px; padding-top:3px; ";
-                html += "><div data-row='" + i + "' data-column='" + j + "'onclick='buttonClicked(event)'"
-                
+                let cell_class = " class='cell-sudoku ";
+                html += "><div data-row='" + i + "' data-column='" + j + "'onclick='buttonClicked(event)'"                
                 if (!edit) {
-                    style += " background-color:lightgrey;";
-                
+                    cell_class += "cell-sudoku-noedit ";                
                 } else if (!this.hints){
                     if (value == 0){
-                       style += " background-color:white;color:white"  
+                       cell_class += "cell-sudoku-edit-zero ";  
                     }
                 } else { 
                     if (!valid){
-                        style += " background-color:pink;"    
+                        cell_class += "cell-sudoku-error "    
                     } else if (valence == 1){
-                        style += " background-color:lightgreen;"
+                        cell_class += "cell-sudoku-hint ";
                     } else {
-                        style += " background-color:white;"
+                        cell_class += "cell-sudoku-edit ";
                     }
                     if (value ==0) {
                         if (!valid){
-                           style += "color:pink;"    
+                           cell_class += "cell-sudoku-error-zero "    
                         } else if (valence == 1){
-                            style += "color:lightgreen;"
+                            cell_class += "cell-sudoku-hint-zero "
                         } else {
-                            style += "color:white;"
+                            cell_class += "cell-sudoku-edit-zero "
                         }
                     }
                 }    
                 
-                style += "'";
-                html += style + "><p>" + this.cells[j][i].value + "</p></div></td>";
+                cell_class += "'";
+                html += cell_class + "><p>" + this.cells[j][i].value + "</p></div></td>";
             }
             html += "</tr>"
         }
