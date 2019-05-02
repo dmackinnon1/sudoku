@@ -30,12 +30,10 @@
       color: black;
       }                
       .cell-sudoku-edit-zero {
-      background-color:white;
-      color:white
+      color:white; 
       }
       .cell-sudoku-edit {
       background-color:white;
-      color:black;      
       }
       .cell-sudoku-error {
       background-color:pink;	
@@ -123,7 +121,7 @@
       		refresh();
       	});
       });
-      
+
    </script>
    <body>
       <nav class="navbar navbar-default" style="margin-bottom:0px">
@@ -161,7 +159,7 @@
                have one possible value are highlighted in <strong>green</strong>, while cells that have 
                conflicting 
                values are highlighted in <strong>red</strong>. Note that the hints are updated based on the
-               values that you have entered, not based on the actual solution. 
+               fixed values and the values that you have entered, not on the actual solution.                
             </p>
          </div>
          <div class="btn-group" role="group">

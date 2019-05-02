@@ -1,9 +1,20 @@
-let currentPosition = null;
+/*
+* Cell, Group, and Board are the main classes that model the
+* Sudoku puzzle. 
+*
+* Valid puzzles are created using the Generator class.
+* The Generator uses an instance of Solver to create the puzzle from
+* a blank board, and verifies that it is solvable using
+* methods provided by the Board class.
+*
+* Interaction is facilitated by callbacks and events that
+* update the currentPosition variable.
+*/
 
 
 /*
  * Generates boards of different sizes.
- * Diffic	ulty can be varied through the "openLevel" parameter
+ * Difficulty can be varied through the "openLevel" parameter
  * which determines the maximum valency (number of possible values)
  * of the cells. The higher the maximum valency, the more open 
  * spaces there are, and the more options there can be for some
@@ -18,7 +29,6 @@ class Generator {
     small() {
         return this.validatedBoard(4, 4);
     }
-
 
     /*
      * Large boards are 9x9. Currently returns boards
@@ -189,7 +199,7 @@ class Group {
 */
 class Board {
     constructor(size) {
-        this.n = size;
+        this.n = size; // only size 4 and 9 are valid.
         this.available = [];
         this.rows = [];
         this.columns = [];
@@ -211,7 +221,6 @@ class Board {
                 let row = this.rows[j];
                 let column = this.columns[i];
                 let block = null;
-                //hardcode for n = 4 - will figure out algorithm
                 if (this.n == 4) {
                     if (i < 2 && j < 2) {
                         block = this.blocks[0];
@@ -415,6 +424,8 @@ class Board {
                 } else if (!this.hints){
                     if (value == 0){
                        cell_class += "cell-sudoku-edit-zero ";  
+                    } else{
+                        cell_class += "cell-sudoku-edit";
                     }
                 } else { 
                     if (!valid){
@@ -424,7 +435,7 @@ class Board {
                     } else {
                         cell_class += "cell-sudoku-edit ";
                     }
-                    if (value ==0) {
+                    if (value == 0) {
                         if (!valid){
                            cell_class += "cell-sudoku-error-zero "    
                         } else if (valence == 1){
@@ -557,6 +568,23 @@ class Board {
     }
 }
 
+/*
+* The currentPositon variable, buttonClicked() function, and Position class 
+* are used to interact with the generated board. It relies on the 
+* display logic to regester with the 'positionUpdate' event.
+* In particular, the board instance needs to be invoked with
+* updateFromCurrentPosition() as part of the postionUpdate event flow.
+*/
+
+let currentPosition = null;
+
+function buttonClicked(e) {
+    let r = e.currentTarget.getAttribute("data-row");
+    let c = e.currentTarget.getAttribute("data-column");
+    currentPosition = new Position(c, r);
+    evnts.fireEvent("positionUpdate");
+}
+
 class Position {
     constructor(x, y) {
         this.i = x;
@@ -577,8 +605,9 @@ class Move {
     }
 
     reset() {
-        this.cell.value = 0;
-        this.cell.editable = true;
+        if (this.cell.editable){
+            this.cell.value = 0;
+        }
     }
 
     options() {
@@ -586,14 +615,19 @@ class Move {
     }
 
     canMove() {
-        return this.options().length != 0;
+        if (this.cell.editable){
+            return this.options().length != 0;
+        } else {
+            return true;
+        }
     }
 
     move() {
-        let v = randomElement(this.options());
-        this.cell.value = v;
-        this.cell.editable = false;
-        this.exclude.push(v);
+        if (this.cell.editable) {
+            let v = randomElement(this.options());
+            this.cell.value = v;
+            this.exclude.push(v);
+        }
     }
 
 }
@@ -608,9 +642,11 @@ class Move {
  * let s = new Solver(b); 
  * s.solve();
  *
- * To do: adapt the behavior to skip over non-editable cells
- * to allow this class to solve partially completed boards (i.e. a general
- * Sudoku solver).
+ * The solving logic is in the Move class - a random digit is chosen
+ * from the values currently available to the cell.
+ * The recusive backtracking is done in the Solver class,
+ * if the random choice at a given level leads to a dead end, it
+ * backs up to the previous move and tries again.
  */
 
 class Solver {
@@ -660,14 +696,7 @@ class Solver {
     }
 
 }
-
-// When clicked, the board will update the currentPosition variable.
-function buttonClicked(e) {
-    let r = e.currentTarget.getAttribute("data-row");
-    let c = e.currentTarget.getAttribute("data-column");
-    currentPosition = new Position(c, r);
-    evnts.fireEvent("positionUpdate");
-}
+// end solver classes.
 
 /*
 * Utility functions.
@@ -703,4 +732,15 @@ function baseList(n) {
 function randomElement(l) {
     let index = Math.floor(Math.random() * l.length);
     return l[index];
+}
+
+
+//uses general solver on a partially complete board;
+function runFullSolveTest(){
+    console.log("Beginning board generation -> ignore preliminary solver failures");
+    let board = new Generator().large();
+    console.log("Solving provided board -> no failures expected");
+    let solver = new Solver(board);;
+    solver.solve();
+    console.log("end test");    
 }
