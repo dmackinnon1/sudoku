@@ -35,7 +35,7 @@ class Generator {
      * with cells with valence 1-5.
      */
     large() {
-        return this.validatedBoard(9, 5);
+        return this.validatedBoard(9, 6);
     }
 
     validatedBoard(size, openLevel) {
@@ -44,6 +44,7 @@ class Generator {
             console.log("could not solve generated board, getting new one");
             b = this.openedBoard(size, openLevel);
         }
+        b.freezeNonZero();
         return b;
     }
 
@@ -388,6 +389,17 @@ class Board {
 
     }
 
+    consoleDisplay(){
+        for (let i = 0; i < this.n; i ++){
+            let row = "|";
+            for (let j = 0; j < this.n; j ++){
+                row += this.cells[j][i].value;
+                row += "|"
+            }
+            console.log(row);
+        }
+    }
+
     drawBoard() {
         let html = "<table>"
         for (let i = 0; i < this.n; i++) {
@@ -551,6 +563,15 @@ class Board {
         }
     }
 
+    freezeNonZero(){       
+        let all = this.allCells();
+        for (let c in all){
+            if (all[c].value != 0){
+                all[c].editable = false;
+            }
+        }
+    }
+
     solution(){
         let solution = new Board(this.n);
         solution.init();
@@ -612,21 +633,33 @@ class Move {
 
     options() {
         return this.cell.optionList().filter(x => !this.exclude.includes(x));
-    }
+    }    
 
+    /*
+    * An editiable cell can be moved if it has options available,
+    * A non-editable cell can be moved only if it has not been 
+    * visited as part of the current attempt.
+    */
     canMove() {
         if (this.cell.editable){
             return this.options().length != 0;
         } else {
-            return true;
-        }
+            return this.exclude.length == 0;
+        }        
     }
 
+    /*
+    * If a cell is editable, take one of the not previously used
+    * options. If a cell is not editable, use the only value available,
+    * and count it as excluded for the next time.
+    */
     move() {
         if (this.cell.editable) {
             let v = randomElement(this.options());
             this.cell.value = v;
             this.exclude.push(v);
+        } else {
+            this.exclude.push(this.cell.value);
         }
     }
 
@@ -654,7 +687,7 @@ class Solver {
         this.board = b;
         this.index = 0;
         this.moves = [];
-        this.cells = this.board.allCells();
+        this.cells = this.board.allCells().sort(cellComp);
     }
 
     forward() {
@@ -739,8 +772,14 @@ function randomElement(l) {
 function runFullSolveTest(){
     console.log("Beginning board generation -> ignore preliminary solver failures");
     let board = new Generator().large();
+    board.consoleDisplay();
     console.log("Solving provided board -> no failures expected");
     let solver = new Solver(board);;
-    solver.solve();
+    console.log(solver.solve());
+    board.consoleDisplay();
     console.log("end test");    
+}
+
+function cellComp(a,b){
+    return a.valence() - b.valence();
 }
