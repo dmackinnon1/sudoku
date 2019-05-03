@@ -35,7 +35,7 @@ class Generator {
      * with cells with valence 1-5.
      */
     large() {
-        return this.validatedBoard(9, 5);
+        return this.validatedBoard(9, 6);
     }
 
     validatedBoard(size, openLevel) {
@@ -399,6 +399,10 @@ class Board {
 
     }
 
+    isCompleteAndValid(){
+        return this.isComplete() && this.isValid();
+    }
+
     consoleDisplay(){
         for (let i = 0; i < this.n; i ++){
             let row = "|";
@@ -623,6 +627,26 @@ class Position {
     }
 }
 
+class Stats {
+    constructor (b){
+        this.board = b;
+    }
+
+    print(){
+        this.board.consoleDisplay();
+        let freeCount = this.editableCount();
+        let clueCount = Math.pow(this.board.n,2) - freeCount;
+        console.log("free cells: " + freeCount);
+        console.log("clues: " + clueCount);
+
+
+    }
+
+    editableCount(){
+        return this.board.allCells().filter(x => x.editable).length;
+    }
+}
+
 /*
  * A step in the solution - tracks the current
  * cell being considered, and a list of excluded (already tried) 
@@ -678,7 +702,7 @@ class Move {
 /*
  * Takes an initialized board and solves it.
  * 
- * Currently, is used to generate completed boards that are
+ * Used to generate completed boards that are
  * then re-opened to create puzzles.
  * let b = new Board(4);
  * b.init();
@@ -690,54 +714,46 @@ class Move {
  * The recusive backtracking is done in the Solver class,
  * if the random choice at a given level leads to a dead end, it
  * backs up to the previous move and tries again.
+ * Cells with low valence (few options) are selected first in order
+ * to speed up the algorithm (fewer dead ends).
+ * 
  */
 
 class Solver {
     constructor(b) {
         this.board = b;
-        this.index = 0;
         this.moves = [];
         this.cells = this.board.allCells().sort(cellComp);
     }
 
     forward() {
-        this.moves.push(new Move(this.cells[this.index]));
-        this.index++;
+        this.cells.sort(cellComp);
+        this.moves.push(new Move(this.cells.pop()));
     }
 
     backward() {
         let old = this.moves.pop();
         old.reset();
-        this.index--;
+        this.cells.push(old.cell);
     }
 
     look() {
-        return this.moves[this.index - 1];
+        return this.moves[this.moves.length -1];
     }
 
     continue(){    
-        return (this.moves.length != 0) && (this.index <= this.cells.length) &&(!this.board.isComplete());
+        return (this.moves.length != 0) &&(!this.board.isComplete());
     }
 
     solve() {
         this.forward();
         while (this.continue()){
-            let c = this.move();
-            if (!c){
-                break;
-            }
+            this.move();    
         }
-        return this.board.isComplete();
+        return this.board.isCompleteAndValid();
     }
 
-    move() {
-        if (this.board.isComplete()) {
-            return true;
-        }
-        if (this.moves.length == 0) {
-            return false;
-        }
-
+    move() {        
         let move = this.look();
         if (move.canMove()) {
             move.move();
@@ -745,9 +761,7 @@ class Solver {
         } else {
             this.backward();
         }
-        return true;
-
-    }
+   }
 
 }
 // end solver classes.
@@ -802,5 +816,5 @@ function runFullSolveTest(){
 }
 
 function cellComp(a,b){
-    return (a.valence() - b.valence());
+    return (b.valence() - a.valence());
 }
