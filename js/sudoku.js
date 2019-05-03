@@ -35,7 +35,7 @@ class Generator {
      * with cells with valence 1-5.
      */
     large() {
-        return this.validatedBoard(9, 6);
+        return this.validatedBoard(9, 5);
     }
 
     validatedBoard(size, openLevel) {
@@ -692,7 +692,6 @@ class Move {
  * backs up to the previous move and tries again.
  */
 
-//Todo: fix issues with solver so it can operate on partial boards.
 class Solver {
     constructor(b) {
         this.board = b;
@@ -707,7 +706,8 @@ class Solver {
     }
 
     backward() {
-        this.moves.pop();
+        let old = this.moves.pop();
+        old.reset();
         this.index--;
     }
 
@@ -715,9 +715,19 @@ class Solver {
         return this.moves[this.index - 1];
     }
 
+    continue(){    
+        return (this.moves.length != 0) && (this.index <= this.cells.length) &&(!this.board.isComplete());
+    }
+
     solve() {
         this.forward();
-        return this.move();
+        while (this.continue()){
+            let c = this.move();
+            if (!c){
+                break;
+            }
+        }
+        return this.board.isComplete();
     }
 
     move() {
@@ -735,8 +745,8 @@ class Solver {
         } else {
             this.backward();
         }
-        //recurse
-        return this.move();
+        return true;
+
     }
 
 }
@@ -792,5 +802,5 @@ function runFullSolveTest(){
 }
 
 function cellComp(a,b){
-    return a.valence() - b.valence();
+    return (a.valence() - b.valence());
 }
