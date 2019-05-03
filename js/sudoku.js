@@ -489,10 +489,6 @@ class Board {
         }
     }
 
-    getAllValence(v){
-        return this.allCells().filter(x => x.valence == v);
-    }
-
     getValenceZero() {
         return this.getValence(0);
     }
