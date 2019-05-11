@@ -59,10 +59,11 @@
    <script>
       //declare variables
       let board = null;
+      let boardName = "main";
       let showHints = false;
       
       //register event
-      evnts.addCallback("positionUpdate", function(){
+      evnts.addCallback(boardName, function(){
       	board.updateFromCurrentPosition();
       	refresh();
       });
@@ -83,6 +84,7 @@
       
       function resetLarge(){
       	board = new Generator().large();
+      	board.name = boardName;
 
       	new Stats(board).print();
       	hideSolution();
@@ -91,6 +93,7 @@
 
       function resetSmall(){
       	board = new Generator().small();
+      	board.name = boardName;
 	     
 	    new Stats(board).print();
       	hideSolution();
