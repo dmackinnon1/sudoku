@@ -61,6 +61,8 @@
       let board = null;
       let boardName = "main";
       let showHints = false;
+      let toggleSolution = false;
+
       
       //register event
       evnts.addCallback(boardName, function(){
@@ -85,33 +87,41 @@
       function resetLarge(){
       	board = new Generator().large();
       	board.name = boardName;
-
       	new Stats(board).print();
-      	hideSolution();
+      	updateSolutionButton
       	refresh();
       }
 
       function resetSmall(){
       	board = new Generator().small();
       	board.name = boardName;
-	     
 	    new Stats(board).print();
-      	hideSolution();
+      	updateSolutionButton();
       	refresh();
       }
 
       function resetBoard() {
          board.reset();
+         updateSolutionButton();
          refresh();
       }
 
       function showSolution(){
-         let text = "<p>Solution:</p>";   
-         $("#solutionDisplay").html(text + board.solution().drawBoard());
+         toggleSolution = !toggleSolution;
+         if (toggleSolution){     
+            $("#boardDisplay").html(board.solution().drawBoard());
+         } else {
+            $("#boardDisplay").html(board.drawBoard());
+         }
+         updateSolutionButton();   
       }
 
-      function hideSolution(){
-          $("#solutionDisplay").html("");  
+      function updateSolutionButton(){
+           if (toggleSolution){     
+            $("#solution-btn").html("Hide Solution");
+         } else {
+            $("#solution-btn").html("Show Solution");
+         }   
       }
       
       //initialize board, register hint updater 
@@ -187,11 +197,11 @@
             <div id="boardDisplay" style="text-align=center"></div>
          </h3>       
          <hr>  
-         <div class="btn-group" role="group">
+        <div class="btn-group" role="group">
             <button type="button" onClick="resetBoard()" class="btn btn-secondary">Reset</button>
-            <button type="button" onClick="showSolution()"class="btn btn-secondary">Show Solution</button>
-            <button type="button" onClick="hideSolution()"class="btn btn-secondary">Hide Solution</button>
-         </div>
+            <button type="button" id="solution-btn" onClick="showSolution()"class="btn btn-secondary">Show Solution</button>
+         </div>             
+
          <h3>
             <div id="solutionDisplay" style="text-align=center"></div>
          </h3>
