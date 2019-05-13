@@ -88,7 +88,8 @@
       	board = new Generator().large();
       	board.name = boardName;
       	new Stats(board).print();
-      	updateSolutionButton
+      	toggleSolution = false;
+      	updateSolutionButton();
       	refresh();
       }
 
@@ -96,12 +97,14 @@
       	board = new Generator().small();
       	board.name = boardName;
 	    new Stats(board).print();
+	    toggleSolution = false;
       	updateSolutionButton();
       	refresh();
       }
 
       function resetBoard() {
          board.reset();
+         toggleSolution = false;
          updateSolutionButton();
          refresh();
       }
