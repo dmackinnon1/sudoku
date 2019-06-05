@@ -272,6 +272,7 @@ class Board {
         for (let c in all){
             if (all[c].editable){
                 all[c].value = 0;
+                all[c].valid = true;
             }
         }
     }
