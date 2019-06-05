@@ -602,7 +602,7 @@ class Board {
     updateFromCurrentPosition() {
         let cell = this.cells[currentPosition.i][currentPosition.j];
         if (!cell.editable) return;
-        cell.updateValue((cell.value + 1) % (board.n + 1));
+        cell.updateValue((cell.value + 1) % (this.n + 1));
     }
 }
 
