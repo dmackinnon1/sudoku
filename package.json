@@ -1,0 +1,22 @@
+{
+  "name": "sudoku-pages",
+  "version": "1.0.0",
+  "description": "Command line tool for generating pages of sudoku puzzles.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmackinnon1/sudoku.git"
+  },
+  "author": "dmackinnon1",
+  "license": "ISC",
+  "bin": {
+   "sudoku-pages": "./index.js"
+ },
+ "bugs": {
+    "url": "https://github.com/dmackinnon1/sudoku/issues"
+  },
+  "homepage": "https://github.com/dmackinnon1/sudoku#readme"
+}
