@@ -98,6 +98,10 @@ class LaTeXDoc {
 		this.packages = [];
 		this.documentclass = dc;
 	}
+	clear(){
+		this.content = [];
+		this.packages = [];
+	}
 	env(label){
 		let environ = new LaTeXEnv(label);
 		this.content.push(environ);

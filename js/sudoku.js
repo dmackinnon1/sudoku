@@ -267,6 +267,29 @@ class Board {
         }
     }
 
+    fromRawString(s){
+        let sCount = 0;
+        for (let i = 0; i < this.n; i++) {
+            for (let j = 0; j < this.n; j++) {
+                let v = parseInt(s[sCount]);
+                this.cells[j][i].value = v;
+                if (v !== 0){
+                    this.cells[j][i].editable = false;
+                } else {
+                    this.cells[j][i].editable = true;
+                }
+                sCount++;
+            }
+        }
+    }
+
+    json(name){
+        let json = {};
+        json['name'] = name;
+        json['values'] = this.rawString();
+        return json;
+    }
+
     reset() {
         let all = this.allCells();
         for (let c in all){
@@ -274,6 +297,14 @@ class Board {
                 all[c].value = 0;
                 all[c].valid = true;
             }
+        }
+    }
+
+    zeroOut() {
+        let all = this.allCells();
+        for (let c in all){
+            all[c].value = 0;
+            all[c].valid = true;
         }
     }
 
@@ -428,6 +459,19 @@ class Board {
                 row += "|"
             }
             row += ".\n";
+            result += row;
+        }
+        return result;
+    }
+
+    rawString(){
+        let result = "";
+        for (let i = 0; i < this.n; i ++){
+            let row = "";
+            for (let j = 0; j < this.n; j ++){
+                let val = this.cells[j][i].value;
+                row += val;
+            }
             result += row;
         }
         return result;
