@@ -30,7 +30,7 @@ try {
 }
 //add new puzzle if there is not one already
 let dayString = day.getDate()  + "_" + (day.getMonth() +1) + "_" + day.getFullYear();
-let dayPretty = months[day.getMonth()] + " " + day.getDate() + "," + day.getFullYear(); 
+let dayPretty = months[day.getMonth()] + " " + day.getDate() + ", " + day.getFullYear(); 
 let p = null;
 if (puzzles[dayString] == undefined){
 	p = sudoku.large();

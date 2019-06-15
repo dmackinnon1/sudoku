@@ -10,6 +10,7 @@ class LaTeXEnv {
 		this.label = l;
 		this.b = null;
 		this.content = [];
+		this.parent = null;
 	}
 	
 	begin(tag){
@@ -105,10 +106,11 @@ class LaTeXDoc {
 	env(label){
 		let environ = new LaTeXEnv(label);
 		this.content.push(environ);
+		environ.parent = this;
 		return environ;
 	}
 	p(content, lb=false){
-		this.content.push(new LaTeXParagraph(content, lb));
+		this.content.push();
 		return this;
 	}
 	command(c,a){
