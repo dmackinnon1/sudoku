@@ -34,7 +34,7 @@ let dayPretty = months[day.getMonth()] + " " + day.getDate() + ", " + day.getFul
 let p = null;
 if (puzzles[dayString] == undefined){
 	p = sudoku.large();
-	puzzles[dayString] = p.json(dayString)
+	puzzles[dayString] = p.board.json(dayString)
 } else {
 	console.log("we have a puzzle for today already: " + puzzles[dayString].values);
 	console.log("exiting");
@@ -56,7 +56,7 @@ let docEnv = doc.defaultPackages()
 	.begin("document");
 docEnv.env().begin("center").command("Huge","Today's Sudoku", true);
 docEnv.env().begin("center").command("Large",dayPretty, true);
-docEnv.env().begin("sudoku").p(p.latexDisplay());
+docEnv.env().begin("sudoku").p(p.board.latexDisplay());
 
 //write out the puzzle file
 let dailyPuzzleFile = dailyFilePrefix + dayString + '_puzzle.tex';
@@ -76,7 +76,7 @@ docEnv = doc.defaultPackages()
 	.begin("document");
 docEnv.env().begin("center").command("Huge","Sudoku Solution", true);
 docEnv.env().begin("center").command("Large",dayPretty, true);
-docEnv.env().begin("sudoku").p(p.solution().latexDisplay());
+docEnv.env().begin("sudoku").p(p.solution.latexDisplay());
 //write out the solution file
 let dailyAnswerFile = dailyFilePrefix + dayString + '_answer.tex';
 fs.writeFile(dailyAnswerFile, doc.build(), function(err) {
