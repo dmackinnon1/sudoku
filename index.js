@@ -57,7 +57,7 @@ let docEnv = doc.defaultPackages()
 docEnv.env().begin("center").command("Huge","Today's Sudoku", true);
 docEnv.env().begin("center").command("Large",dayPretty, true);
 docEnv.env().begin("sudoku").p(p.board.latexDisplay());
-
+docEnv.env().begin("center").p(p.difficulty);
 //write out the puzzle file
 let dailyPuzzleFile = dailyFilePrefix + dayString + '_puzzle.tex';
 fs.writeFile(dailyPuzzleFile, doc.build(), function(err) {
