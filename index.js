@@ -7,7 +7,7 @@
 const fs = require('fs');
 let sudoku = require('./js/sudoku.js');
 let doc = require('./js/latex-builders.js');
-const dailyFilePrefix = '../dailySudoku/'
+const dailyFilePrefix = 'dailySudoku/'
 const dailyFile = dailyFilePrefix + 'daily_sudokus.json';
 let puzzles = {}; 
 const months =['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
