@@ -11,15 +11,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - run: ./index.js 
       - name: add permissions
         run: "git config --global --add safe.directory /__w/sudoku/sudoku"
       - name: git configuration
         run: |
           git config --global user.email "dmackinnon1@gmail.com"
           git config --global user.name "Dan MacKinnon"
+      - name: generate the puzzle
+        run: ./index.js 
       - name: commit 
         run: |
           git add .
+          git add dailySudoku/*.tex
           git commit -m 'adding new puzzles github action'
           git push
