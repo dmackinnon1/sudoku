@@ -9,5 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     container: node:latest
     steps:
-      - run: node --version
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - run: ./index.js 
