@@ -10,3 +10,4 @@ jobs:
     container: node:latest
     steps:
       - run: node --version
+      - run: ./index.js 
