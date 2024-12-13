@@ -1,4 +1,4 @@
-name: create a puzzle
+name: build daily puzzle LaTeX
 on:
   workflow_dispatch:
 
@@ -22,6 +22,5 @@ jobs:
       - name: commit 
         run: |
           git add .
-          git add dailySudoku/*.tex
           git commit -m 'adding new puzzles github action'
           git push
