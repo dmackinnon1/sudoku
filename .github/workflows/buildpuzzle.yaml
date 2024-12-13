@@ -1,0 +1,12 @@
+name: create a puzzle
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: node:14
+    steps:
+      - run: node --version
