@@ -7,6 +7,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: node:14
+    container: node:latest
     steps:
       - run: node --version
