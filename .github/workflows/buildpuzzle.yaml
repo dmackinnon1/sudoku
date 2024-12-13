@@ -12,3 +12,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - run: ./index.js 
+      - name: add permissions
+        run: "git config --global --add safe.directory /__w/sudoku/sudoku"
+      - name: commit 
+        run: |
+          git add .
+          git commit -m 'adding new puzzles github action'
+          git push
