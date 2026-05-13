@@ -11,5 +11,3 @@ If hints are turned on, then all cells that only have one possible value are hig
 
 Try out a live version at https://dmackinnon1.github.io/sudoku/.
 
-## daily Sudoku folder
-The folder /dailySudoku contains LaTex source files for printable daily puzzles. If no puzzle exists for today, you can create one in this repo by running the `build daily puzzle LaTeX` GitHub action.
